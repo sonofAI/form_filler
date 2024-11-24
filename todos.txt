@@ -1,0 +1,7 @@
+- bot is working
+- working on windows perfectly
+- seems like russian characters not entering the fields
+- 
+
+
+- should spin up docker
