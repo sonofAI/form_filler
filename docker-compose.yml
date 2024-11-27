@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  main:
+    build:
+      context: .
+    container_name: main_bot
+    command: python main.py
+    restart: always
+    volumes:
+      - .:/app
+    depends_on:
+      - form_filler
+
+  form_filler:
+    build:
+      context: .
+    container_name: form_filler_bot
+    command: python form_filler.py
+    restart: always
+    volumes:
+      - .:/app

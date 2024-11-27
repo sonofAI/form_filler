@@ -1,19 +1,18 @@
-
 import asyncio
 from aiogram import Bot, Dispatcher
 from handlers import register_handlers
 
-# Укажите токен вашего бота
-API_TOKEN = "8067065920:AAHGS3AZtUTVIpxQDuYk2hkFR9hF4dUS3mU"
+from dotenv import load_dotenv
+import os
+load_dotenv()
+API_TOKEN = os.getenv("API_TOKEN")
 
 async def main():
     bot = Bot(token=API_TOKEN)
     dp = Dispatcher()
 
-    # Регистрация хэндлеров
     register_handlers(dp)
 
-    # Запуск диспетчера
     await dp.start_polling(bot)
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ async def email_handler(message: Message, state: FSMContext):
 
 async def phone_handler(message: Message, state: FSMContext):
     await state.update_data(phone=message.text)
-    await message.answer("Введите дату рождения (ГГГГ-ММ-ДД):")
+    await message.answer("Введите дату рождения (ДД.ММ.ГГГГ):")
     await state.set_state(FormState.birth_date)
 
 async def birth_date_handler(message: Message, state: FSMContext):

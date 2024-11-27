@@ -6,6 +6,12 @@ from db import get_next_user, update_user_status
 from datetime import datetime
 import time
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent  # чтобы сохранить скрины
+
+FORM_URL = "https://b24-iu5stq.bitrix24.site/backend_test/"
+
 def check_and_fill_form():
     user = get_next_user()
     if not user:
@@ -14,52 +20,38 @@ def check_and_fill_form():
 
     user_id, name, surname, email, phone, birth_date, status = user
 
-    options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    # options.binary_location = "/usr/bin/chromium"
-    driver = webdriver.Chrome(options=options)
+    options = webdriver.FirefoxOptions()
+    # options.add_argument("--headless")  # browser wont be shown
+    driver = webdriver.Firefox(options=options)
 
     try:
-        driver.get("https://b24-iu5stq.bitrix24.site/backend_test/")
+        driver.get(FORM_URL)
         time.sleep(3)
 
-        # Шаг 1: Ввод имени и фамилии
-        driver.find_element(By.NAME, "name").send_keys(name)  # Введите имя
-        driver.find_element(By.NAME, "lastname").send_keys(surname)  # Введите фамилию
+        driver.find_element(By.NAME, "name").send_keys(name)
+        driver.find_element(By.NAME, "lastname").send_keys(surname)
         time.sleep(2)
-        driver.find_element(By.CLASS_NAME, "b24-form-btn").click()  # Нажмите «Далее» для перехода к следующему шагу
-        time.sleep(2)  # Дождитесь загрузки следующего шага
+        driver.find_element(By.CLASS_NAME, "b24-form-btn").click()  # это кнопа далее
+        time.sleep(2)
 
-        # Шаг 2: Ввод email и телефона
-        driver.find_element(By.NAME, "email").send_keys(email)  # Введите email
-        driver.find_element(By.NAME, "phone").send_keys(phone)  # Введите номер телефона
+        driver.find_element(By.NAME, "email").send_keys(email)
+        driver.find_element(By.NAME, "phone").send_keys(phone)
         time.sleep(2)
-        # driver.find_element(By.CLASS_NAME, "b24-form-btn").click()  # Нажмите «Далее» для перехода к следующему шагу
-        # submit_button = driver.find_element(By.XPATH, "//button[text()='Далее']")
-        # submit_button.click()
         buttons = driver.find_elements(By.CLASS_NAME, "b24-form-btn")
-        buttons[1].click()
-        time.sleep(2)  # Дождитесь загрузки следующего шага
+        buttons[1].click()  # тута были две кнопки с одинакывыми классами(назад и далее) поэтому находим обе и выбираем вторую
+        time.sleep(2)
 
-        # Шаг 3: Ввод даты рождения и отправка формы
-        # driver.find_element(By.NAME, "birth_date").send_keys(birth_date)  # Введите дату рождения
-        # driver.find_element(By.ID, "submit_button").click()  # Нажмите кнопку «Отправить»
         birth_date_input = driver.find_element(By.XPATH, "//input[@class='b24-form-control'][@readonly='readonly']")
-        driver.execute_script("arguments[0].value = arguments[1];", birth_date_input, birth_date)
-        # birth_date_input.click()  # Открываем календарь, если поле кликабельно
-        # birth_date_input.send_keys(birth_date)  # Вводим дату
-        time.sleep(10)  # Дождитесь завершения отправки
-        # driver.find_element(By.CLASS_NAME, "b24-form-btn").click()  # Нажмите «Далее» для перехода к следующему шагу
-        # submit_button = driver.find_element(By.XPATH, "//button[text()='Отправить']")
-        # submit_button.click()
+        driver.execute_script("arguments[0].value = arguments[1];", birth_date_input, birth_date)  # просто делаем валуе = валуе чтобы вставить др а то по другому туда писать не получается кроме что все детали в ручную нажимать
+        time.sleep(3)
         buttons = driver.find_elements(By.CLASS_NAME, "b24-form-btn")
         buttons[1].click()
 
 
+        # SAVINGGGG
         time.sleep(3)
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-        screenshot_path = f"./screenshots/{timestamp}_{name}.png"
-        screenshot_path = f"C:/Users/ME/Desktop/form_filler-main/form_filler-main/bot/screenshots/{timestamp}_{name}.png"
+        screenshot_path = f"{BASE_DIR}/screenshots/{timestamp}_{name}.png"
         driver.save_screenshot(screenshot_path)
         print(f"Скриншот сохранён: {screenshot_path}")
 

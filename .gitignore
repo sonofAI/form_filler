@@ -162,3 +162,8 @@ cython_debug/
 #.idea/
 
 users.db
+
+todos.txt
+
+# чтобы скриншотами не засорялись
+*.png
